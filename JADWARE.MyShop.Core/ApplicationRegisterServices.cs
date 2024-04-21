@@ -9,6 +9,7 @@ namespace JADWARE.MyShop.Core
         public static IServiceCollection AddAplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IHelloWorldService, HelloWorldService> ();
+            services.AddScoped<IProductService, ProductService> ();
             return services;
         }
     }

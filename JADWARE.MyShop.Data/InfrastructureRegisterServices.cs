@@ -9,6 +9,7 @@ namespace JADWARE.MyShop.Data
         public static IServiceCollection AddInfraestructureServices(this IServiceCollection services)
         {
             services.AddScoped<IHelloWorldRepository, HelloWorldRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
             return services;
         }
     }
