@@ -14,14 +14,24 @@ namespace JADWARE.MyShop.Core.Services
             _userRepository = userRepository;
         }
 
-        public async Task<User> GetUserByMailAndPasswordAsync(GetUserByMailAndPassRequest request, CancellationToken ct)
+        public async Task<Boolean> InsertUserAsync(InsertUserRequest request, CancellationToken ct)
         {
-            return await _userRepository.GetUserByMailAndPasswordAsync(request, ct);
+            return await _userRepository.InsertUserAsync(request, ct);
         }
 
         public async Task<Boolean> SendPasswordByEmailAsync(SendPasswordToUserRequest request, CancellationToken ct)
         {
             return await _userRepository.SendPasswordByEmailAsync(request, ct);
+        }
+
+        public async Task<Boolean> VerifyEmailExistsAsync(VerifyEmailExistsRequest request, CancellationToken ct)
+        {
+            return await _userRepository.VerifyEmailExistsAsync(request, ct);
+        }
+
+        public async Task<User> GetUserByMailAndPasswordAsync(GetUserByMailAndPassRequest request, CancellationToken ct)
+        {
+            return await _userRepository.GetUserByMailAndPasswordAsync(request, ct);
         }
     }
 }

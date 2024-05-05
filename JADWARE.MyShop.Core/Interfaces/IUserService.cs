@@ -7,5 +7,7 @@ namespace JADWARE.MyShop.Core.Interfaces
     {
         Task<User> GetUserByMailAndPasswordAsync(GetUserByMailAndPassRequest request, CancellationToken ct);
         Task<Boolean> SendPasswordByEmailAsync(SendPasswordToUserRequest request, CancellationToken ct);
+        Task<Boolean> VerifyEmailExistsAsync(VerifyEmailExistsRequest request, CancellationToken ct);
+        Task<Boolean> InsertUserAsync(InsertUserRequest request, CancellationToken ct);
     }
 }

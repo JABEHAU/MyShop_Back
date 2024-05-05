@@ -11,7 +11,7 @@ namespace JADWARE.MyShop.API.Endpoints
 
         public override void Configure()
         {
-            Post("HelloWorld");
+            Get("HelloWorld");
             AllowAnonymous();
         }
 
