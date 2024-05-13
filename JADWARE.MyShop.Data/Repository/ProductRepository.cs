@@ -1,9 +1,11 @@
 ﻿using JADWARE.MyShop.Core.Interfaces.Repository;
 using JADWARE.MyShop.Domain.Models;
+using JADWARE.MyShop.Domain.Requests.Products;
+using JADWARE.MyShop.Domain.Responses.Products;
 
 namespace JADWARE.MyShop.Data.Repository
 {
-    public class ProductRepository: IProductRepository
+    public class ProductRepository : IProductRepository
     {
         private string _connectionString;
 
@@ -20,11 +22,81 @@ namespace JADWARE.MyShop.Data.Repository
             return response;
         }
 
-        public async Task<IEnumerable<Category>> GetCategories(CancellationToken ct)
+        public async Task<IEnumerable<BasicProduct>> GetTopProductsByCategoryAsync(int categoryId, CancellationToken ct)
         {
-            string query = "SELECT * FROM CATEGORIAS";
+            var sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine("SELECT TOP 8 P.PRODUCTOID, P.CATEGORIAID, P.NOMBRE, P.PRECIO, P.ESOFERTA, P.PRECIOOFERTA, F.FOTO AS FOTOPRINCIPAL");
+            sqlQuery.AppendLine("FROM PRODUCTOS P");
+            sqlQuery.AppendLine("OUTER APPLY(");
+            sqlQuery.AppendLine("SELECT TOP 1 PRODUCTOID, FOTO");
+            sqlQuery.AppendLine("FROM FOTOS");
+            sqlQuery.AppendLine("WHERE PRODUCTOID=P.PRODUCTOID) F");
+            sqlQuery.AppendLine($"WHERE P.CATEGORIAID={categoryId} AND P.CANTIDAD>0");
             using var connection = new SqlConnection(_connectionString);
-            var response = await connection.QueryAsync<Category>(new CommandDefinition(query, ct));
+            var response = await connection.QueryAsync<BasicProduct>(new CommandDefinition(sqlQuery.ToString(), ct));
+            return response;
+        }
+
+        public async Task<IEnumerable<BasicProduct>> GetAllByCategoryAsync(int categoryId, CancellationToken ct)
+        {
+            var sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine("SELECT P.PRODUCTOID, P.CATEGORIAID, P.NOMBRE, P.PRECIO, P.ESOFERTA, P.PRECIOOFERTA, F.FOTO AS FOTOPRINCIPAL");
+            sqlQuery.AppendLine("FROM PRODUCTOS P");
+            sqlQuery.AppendLine("OUTER APPLY(");
+            sqlQuery.AppendLine("SELECT TOP 1 PRODUCTOID, FOTO");
+            sqlQuery.AppendLine("FROM FOTOS");
+            sqlQuery.AppendLine("WHERE PRODUCTOID=P.PRODUCTOID) F");
+            sqlQuery.AppendLine($"WHERE P.CATEGORIAID={categoryId} AND P.CANTIDAD>0");
+            using var connection = new SqlConnection(_connectionString);
+            var response = await connection.QueryAsync<BasicProduct>(new CommandDefinition(sqlQuery.ToString(), ct));
+            return response;
+        }
+
+        public async Task<Product> GetProductAsync(int productId, CancellationToken ct)
+        {
+            Product product = new Product();
+            var sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine("SELECT P.PRODUCTOID, P.VENDEDORID, P.CATEGORIAID, P.NOMBRE, P.DESCRIPCION,P.MARCA,");
+            sqlQuery.AppendLine("P.MODELO, P.GENERO, P.CANTIDAD, P.PRECIO, P.ESOFERTA, P.PRECIOOFERTA");
+            sqlQuery.AppendLine("FROM PRODUCTOS P");
+            sqlQuery.AppendLine("WHERE P.PRODUCTOID=@PRODUCTOID");
+            var commandDefinition = new CommandDefinition(sqlQuery.ToString(), new { PRODUCTOID = productId }, cancellationToken: ct);
+
+            using var connection = new SqlConnection(_connectionString);
+            product = await connection.QueryFirstOrDefaultAsync<Product>(commandDefinition);
+            product.Fotos = await GetProductPhotosAsync(productId, ct);
+            product.Comentarios = await GetProductCommentsAsync(productId, ct);
+
+            return product;
+        }
+
+        public async Task<IEnumerable<Photo>> GetProductPhotosAsync(int productId, CancellationToken ct)
+        {
+            var sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine("SELECT FOTOID, PRODUCTOID, FOTO");
+            sqlQuery.AppendLine("FROM FOTOS");
+            sqlQuery.AppendLine("WHERE PRODUCTOID=@PRODUCTOID");
+            var commandDefinition = new CommandDefinition(sqlQuery.ToString(), new { PRODUCTOID = productId }, cancellationToken: ct);
+
+            using var connection = new SqlConnection(_connectionString);
+            var response = await connection.QueryAsync<Photo>(commandDefinition);
+
+            return response;
+        }
+
+        public async Task<IEnumerable<Comment>> GetProductCommentsAsync(int productId, CancellationToken ct)
+        {
+            var sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine("SELECT C.COMENTARIO, C.CALIFICACION, U.NOMBRE AS COMENTADOR");
+            sqlQuery.AppendLine("FROM COMENTARIOS C");
+            sqlQuery.AppendLine("INNER JOIN USUARIOS U ON C.COMENTADORID=U.USUARIOID");
+            sqlQuery.AppendLine("WHERE C.PRODUCTOID=@PRODUCTOID");
+
+            var commandDefinition = new CommandDefinition(sqlQuery.ToString(), new { PRODUCTOID = productId }, cancellationToken: ct);
+
+            using var connection = new SqlConnection(_connectionString);
+            var response = await connection.QueryAsync<Comment>(commandDefinition);
+
             return response;
         }
     }

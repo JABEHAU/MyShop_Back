@@ -11,6 +11,7 @@ namespace JADWARE.MyShop.Data
             services.AddScoped<IHelloWorldRepository, HelloWorldRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICategoriesRepository, CategoriesRepository>();
             return services;
         }
     }

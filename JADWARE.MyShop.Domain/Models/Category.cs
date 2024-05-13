@@ -2,7 +2,8 @@
 {
     public class Category
     {
-        public int categoriaId { get; set; }
-        public string categoria {  get; set; }
+        public int CategoriaId { get; set; }
+        public string Categoria {  get; set; }
+        public string Imagen { get; set; }
     }
 }

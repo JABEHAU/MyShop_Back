@@ -1,4 +1,5 @@
 ﻿using JADWARE.MyShop.Core.Interfaces;
+using JADWARE.MyShop.Core.Interfaces.Repository;
 using JADWARE.MyShop.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,7 @@ namespace JADWARE.MyShop.Core
             services.AddScoped<IHelloWorldService, HelloWorldService> ();
             services.AddScoped<IProductService, ProductService> ();
             services.AddScoped<IUserService, UserService> ();
+            services.AddScoped<ICategoriesService, CategoriesService>();
             return services;
         }
     }

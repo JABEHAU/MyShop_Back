@@ -2,17 +2,17 @@
 {
     public class User
     {
-        public int usuarioId {  get; set; }
-        public string correo { get; set; }
-        public string nombre {  get; set; }
-        public string telefono { get; set; }
-        public string pais { get; set; }
-        public string estado { get; set; }
-        public string ciudad { get; set; }
-        public string domicilio { get; set; }
-        public string cp { get; set; }
-        public int esVendedor { get; set; }
-        public string? numCtaBeneficiario { get; set; }
-        public string? nombreCtaBeneficiario { get; set; }
+        public int UsuarioId {  get; set; }
+        public string Correo { get; set; }
+        public string Nombre {  get; set; }
+        public string Telefono { get; set; }
+        public string Pais { get; set; }
+        public string Estado { get; set; }
+        public string Ciudad { get; set; }
+        public string Domicilio { get; set; }
+        public string Cp { get; set; }
+        public int EsVendedor { get; set; }
+        public string? NumCtaBeneficiario { get; set; }
+        public string? NombreCtaBeneficiario { get; set; }
     }
 }

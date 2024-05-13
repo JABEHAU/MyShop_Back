@@ -1,25 +1,27 @@
 ﻿using JADWARE.MyShop.Core.Interfaces;
 using JADWARE.MyShop.Domain.Models;
+using JADWARE.MyShop.Domain.Requests.Products;
 
 namespace JADWARE.MyShop.API.Endpoints.Products
 {
-    public class GetCategories: EndpointWithoutRequest<IEnumerable<Category>>
+    public class GetProductEndpoint: Endpoint<GetProductRequest, Product>
     {
         private readonly IProductService _productService;
-        public GetCategories(IProductService productService)
+
+        public GetProductEndpoint(IProductService productService)
         {
             _productService = productService;
         }
 
         public override void Configure()
         {
-            Post("Products/Categories");
+            Post("Products/GetProduct");
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync(CancellationToken ct)
+        public override async Task HandleAsync(GetProductRequest request, CancellationToken ct)
         {
-            var response = await _productService.GetCategories(ct);
+            Product response = await _productService.GetProductAsync(request, ct);
             await SendOkAsync(response, ct);
         }
     }

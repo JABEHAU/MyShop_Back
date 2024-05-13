@@ -1,6 +1,8 @@
 ﻿using JADWARE.MyShop.Core.Interfaces;
 using JADWARE.MyShop.Core.Interfaces.Repository;
 using JADWARE.MyShop.Domain.Models;
+using JADWARE.MyShop.Domain.Requests.Products;
+using JADWARE.MyShop.Domain.Responses.Products;
 
 namespace JADWARE.MyShop.Core.Services
 {
@@ -18,9 +20,19 @@ namespace JADWARE.MyShop.Core.Services
             return await _productRepository.GetAllProductsAsync(ct);
         }
 
-        public async Task<IEnumerable<Category>> GetCategories(CancellationToken ct)
+        public async Task<IEnumerable<BasicProduct>> GetTopProductsByCategoryAsync(GetTopByCategoryRequest request, CancellationToken ct)
         {
-            return await _productRepository.GetCategories(ct);
+            return await _productRepository.GetTopProductsByCategoryAsync(request.CategoryId, ct);
+        }
+
+        public async Task<IEnumerable<BasicProduct>> GetAllByCategoryAsync(GetTopByCategoryRequest request, CancellationToken ct)
+        {
+            return await _productRepository.GetAllByCategoryAsync(request.CategoryId, ct);
+        }
+
+        public async Task<Product> GetProductAsync(GetProductRequest request, CancellationToken ct)
+        {
+            return await _productRepository.GetProductAsync(request.ProductId, ct);
         }
     }
 }
