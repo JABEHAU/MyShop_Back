@@ -1,4 +1,4 @@
-﻿using JADWARE.MyShop.Core.Interfaces;
+﻿ using JADWARE.MyShop.Core.Interfaces;
 using JADWARE.MyShop.Domain.Models;
 
 namespace JADWARE.MyShop.API.Endpoints.Products

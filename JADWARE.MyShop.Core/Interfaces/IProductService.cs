@@ -10,5 +10,7 @@ namespace JADWARE.MyShop.Core.Interfaces
         Task<IEnumerable<BasicProduct>> GetTopProductsByCategoryAsync(GetTopByCategoryRequest request, CancellationToken ct);
         Task<IEnumerable<BasicProduct>> GetAllByCategoryAsync(GetTopByCategoryRequest request, CancellationToken ct);
         Task<Product> GetProductAsync(GetProductRequest request, CancellationToken ct);
+        Task<BasicProduct> GetBasicProductAsync(GetProductRequest request, CancellationToken ct);
+        Task<IEnumerable<BasicProduct>> SearchByFilter(SearchByFilterRequest request, CancellationToken ct);
     }
 }

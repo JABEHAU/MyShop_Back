@@ -34,5 +34,14 @@ namespace JADWARE.MyShop.Core.Services
         {
             return await _productRepository.GetProductAsync(request.ProductId, ct);
         }
+        public async Task<BasicProduct> GetBasicProductAsync(GetProductRequest request, CancellationToken ct)
+        {
+            return await _productRepository.GetBasicProductAsync(request.ProductId, ct);
+        }
+
+        public async Task<IEnumerable<BasicProduct>> SearchByFilter(SearchByFilterRequest request, CancellationToken ct)
+        {
+            return await _productRepository.SearchByFilter(request, ct);
+        }
     }
 }

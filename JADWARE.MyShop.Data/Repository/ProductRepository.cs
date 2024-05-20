@@ -52,6 +52,22 @@ namespace JADWARE.MyShop.Data.Repository
             return response;
         }
 
+        public async Task<BasicProduct> GetBasicProductAsync(int productId, CancellationToken ct)
+        {
+            var sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine("SELECT P.PRODUCTOID, P.CATEGORIAID, P.NOMBRE, P.PRECIO, P.ESOFERTA, P.PRECIOOFERTA, F.FOTO AS FOTOPRINCIPAL, C.CATEGORIA, P.CANTIDAD AS DISPONIBLE");
+            sqlQuery.AppendLine("FROM PRODUCTOS P");
+            sqlQuery.AppendLine("OUTER APPLY(");
+            sqlQuery.AppendLine("SELECT TOP 1 PRODUCTOID, FOTO");
+            sqlQuery.AppendLine("FROM FOTOS");
+            sqlQuery.AppendLine("WHERE PRODUCTOID=P.PRODUCTOID) F");
+            sqlQuery.AppendLine("INNER JOIN CATEGORIAS C ON P.CATEGORIAID=C.CATEGORIAID");
+            sqlQuery.AppendLine($"WHERE P.PRODUCTOID={productId} AND P.CANTIDAD>0");
+            using var connection = new SqlConnection(_connectionString);
+            var response = await connection.QueryFirstAsync<BasicProduct>(new CommandDefinition(sqlQuery.ToString(), ct));
+            return response;
+        }
+
         public async Task<Product> GetProductAsync(int productId, CancellationToken ct)
         {
             Product product = new Product();
@@ -97,6 +113,40 @@ namespace JADWARE.MyShop.Data.Repository
             using var connection = new SqlConnection(_connectionString);
             var response = await connection.QueryAsync<Comment>(commandDefinition);
 
+            return response;
+        }
+
+        public async Task<bool> UpdateProductAmount(int productId, int amount, CancellationToken ct)
+        {
+            try
+            {
+                var sqlQuery = new StringBuilder();
+                sqlQuery.AppendLine("Update productos");
+                sqlQuery.AppendLine($"set cantidad = cantidad-{amount}");
+                sqlQuery.AppendLine($"where productoId={productId}");
+                using var connection = new SqlConnection(_connectionString);
+                await connection.ExecuteAsync(new CommandDefinition(sqlQuery.ToString(), ct));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<IEnumerable<BasicProduct>> SearchByFilter(SearchByFilterRequest request, CancellationToken ct)
+        {
+            var sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine("SELECT P.PRODUCTOID, P.CATEGORIAID, P.NOMBRE, P.PRECIO, P.ESOFERTA, P.PRECIOOFERTA, F.FOTO AS FOTOPRINCIPAL, C.CATEGORIA, P.CANTIDAD AS DISPONIBLE");
+            sqlQuery.AppendLine("FROM PRODUCTOS P");
+            sqlQuery.AppendLine("OUTER APPLY(");
+            sqlQuery.AppendLine("SELECT TOP 1 PRODUCTOID, FOTO");
+            sqlQuery.AppendLine("FROM FOTOS");
+            sqlQuery.AppendLine("WHERE PRODUCTOID=P.PRODUCTOID) F");
+            sqlQuery.AppendLine("INNER JOIN CATEGORIAS C ON P.CATEGORIAID=C.CATEGORIAID");
+            sqlQuery.AppendLine($"WHERE (P.NOMBRE like '%{request.Filter}%' or P.DESCRIPCION like '%{request.Filter}%' OR C.CATEGORIA like '%{request.Filter}%') AND P.CANTIDAD>0");
+            using var connection = new SqlConnection(_connectionString);
+            var response = await connection.QueryAsync<BasicProduct>(new CommandDefinition(sqlQuery.ToString(), ct));
             return response;
         }
     }

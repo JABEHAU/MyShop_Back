@@ -10,8 +10,11 @@ namespace JADWARE.MyShop.Domain.Responses.Products
     {
         public int ProductoId { get; set; }
         public int CategoriaId { get; set; }
+        public string Categoria { get; set; }
         public string Nombre { get; set; }
         public float Precio { get; set; }
+
+        public int Disponible { get; set; }
         public int EsOferta { get; set; }
         public float? PrecioOferta { get; set; }
         public string FotoPrincipal { get; set; }

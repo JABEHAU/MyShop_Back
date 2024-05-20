@@ -13,6 +13,8 @@ namespace JADWARE.MyShop.Core
             services.AddScoped<IProductService, ProductService> ();
             services.AddScoped<IUserService, UserService> ();
             services.AddScoped<ICategoriesService, CategoriesService>();
+            services.AddScoped<IShopingCartService, ShopingCartService>();
+            services.AddScoped<ISalesService, SalesService> ();
             return services;
         }
     }
